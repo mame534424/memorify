@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from services.message_service import save_message
+from services.ai_service import classify_intent
 
 
 router = APIRouter()
@@ -29,8 +30,15 @@ async def telegram_webhook(
         direction="inbound"
     )
     
-    print (f"Received message: {text}")
+    intent = await classify_intent(
+        text
+    )
+
+
+    print(intent)
+
 
     return {
-        "status":"received"
+        "status":"processed",
+        "ai":intent
     }
